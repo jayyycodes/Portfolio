@@ -1,272 +1,114 @@
 "use client";
 
 import Link from "next/link";
-import { Section } from "@/components/ui/Section";
-import { Button } from "@/components/ui/Button";
-import { motion, useScroll, useTransform } from "framer-motion";
-import { ArrowRight, Download, Sparkles, Github, Linkedin, Mail } from "lucide-react";
-import { useEffect, useState, useRef } from "react";
-
-const roles = [
-    "AI & Data Science Student",
-    "Full Stack Developer",
-    "ML Enthusiast",
-    "Problem Solver",
-];
-
-const socialLinks = [
-    { name: "GitHub", href: "https://github.com/jayyycodes", icon: Github },
-    { name: "LinkedIn", href: "https://linkedin.com/in/jaydatta-kshirsagar", icon: Linkedin },
-    { name: "Email", href: "mailto:jaykshirsagar5121@gmail.com", icon: Mail },
-];
+import Image from "next/image";
+import { motion } from "framer-motion";
 
 export default function Hero() {
-    const [roleIndex, setRoleIndex] = useState(0);
-    const [displayText, setDisplayText] = useState("");
-    const [isDeleting, setIsDeleting] = useState(false);
-    const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-    const containerRef = useRef(null);
-
-    const { scrollYProgress } = useScroll({
-        target: containerRef,
-        offset: ["start start", "end start"],
-    });
-
-    const y = useTransform(scrollYProgress, [0, 1], [0, 200]);
-    const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
-
-    // Mouse tracking effect
-    useEffect(() => {
-        const handleMouseMove = (e: MouseEvent) => {
-            if (containerRef.current) {
-                const rect = (containerRef.current as HTMLElement).getBoundingClientRect();
-                const x = ((e.clientX - rect.left) / rect.width) * 100;
-                const y = ((e.clientY - rect.top) / rect.height) * 100;
-                setMousePosition({ x, y });
-            }
-        };
-
-        window.addEventListener('mousemove', handleMouseMove);
-        return () => window.removeEventListener('mousemove', handleMouseMove);
-    }, []);
-
-    useEffect(() => {
-        const currentRole = roles[roleIndex];
-        const timeout = setTimeout(() => {
-            if (!isDeleting) {
-                if (displayText.length < currentRole.length) {
-                    setDisplayText(currentRole.slice(0, displayText.length + 1));
-                } else {
-                    setTimeout(() => setIsDeleting(true), 2000);
-                }
-            } else {
-                if (displayText.length > 0) {
-                    setDisplayText(displayText.slice(0, -1));
-                } else {
-                    setIsDeleting(false);
-                    setRoleIndex((prev) => (prev + 1) % roles.length);
-                }
-            }
-        }, isDeleting ? 50 : 100);
-
-        return () => clearTimeout(timeout);
-    }, [displayText, isDeleting, roleIndex]);
-
     return (
-        <Section id="hero" className="min-h-screen flex items-center justify-center pt-24">
-            <motion.div
-                ref={containerRef}
-                style={{ y, opacity }}
-                className="flex flex-col items-center text-center space-y-8 relative"
-            >
-                {/* Enhanced Cursor-following gradient effect */}
-                <motion.div
-                    className="absolute inset-0 pointer-events-none overflow-hidden"
+        <section
+            id="hero"
+            className="w-screen relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] min-h-[100svh] flex flex-col md:flex-row items-center"
+        >
+            {/* Background Image */}
+            <div className="absolute inset-0 md:left-auto md:right-0 w-full md:w-[45%] h-full z-0 overflow-hidden">
+                {/* Left fade overlay — fades image into background */}
+                <div
+                    className="absolute inset-y-0 left-0 w-full md:w-[40%] z-10 pointer-events-none"
                     style={{
-                        background: `radial-gradient(circle 800px at ${mousePosition.x}% ${mousePosition.y}%, hsl(var(--accent-blue-bright) / 0.12), hsl(var(--accent-blue-teal) / 0.08) 40%, transparent 70%)`,
-                    }}
-                    animate={{
-                        opacity: [0.8, 1, 0.8],
-                    }}
-                    transition={{
-                        duration: 3,
-                        repeat: Infinity,
-                        ease: "easeInOut",
+                        background:
+                            "linear-gradient(to right, #0A0A0B 0%, #0A0A0B 30%, transparent 100%)",
                     }}
                 />
+                {/* Bottom fade on mobile */}
+                <div
+                    className="absolute inset-x-0 bottom-0 h-1/3 md:hidden z-10 pointer-events-none"
+                    style={{
+                        background:
+                            "linear-gradient(to top, #0A0A0B 0%, transparent 100%)",
+                    }}
+                />
+                <Image
+                    src="/heroimg.jpeg"
+                    alt="Jaydatta Kshirsagar"
+                    fill
+                    className="object-cover object-top md:object-center"
+                    style={{ filter: "saturate(0.6)" }}
+                    priority
+                />
+            </div>
 
-                {/* Decorative Elements with Parallax - Blue Theme */}
+            {/* Content — vertically centered in viewport */}
+            <div className="max-w-screen-xl w-full mx-auto px-5 md:px-8 lg:px-12 xl:px-16 flex relative z-10 pt-28 pb-16 md:pt-40 md:pb-24 min-h-[100svh]">
                 <motion.div
-                    className="absolute -top-20 -left-20 w-40 h-40 rounded-full opacity-20"
-                    style={{
-                        background: "radial-gradient(circle, hsl(var(--accent-blue-teal)) 0%, transparent 70%)",
-                    }}
-                    animate={{
-                        scale: [1, 1.2, 1],
-                        opacity: [0.2, 0.3, 0.2],
-                    }}
-                    transition={{
-                        duration: 4,
-                        repeat: Infinity,
-                        ease: "easeInOut",
-                    }}
-                />
-                <motion.div
-                    className="absolute -bottom-10 -right-20 w-32 h-32 rounded-full opacity-20"
-                    style={{
-                        background: "radial-gradient(circle, hsl(var(--accent-blue-bright)) 0%, transparent 70%)",
-                    }}
-                    animate={{
-                        scale: [1, 1.3, 1],
-                        opacity: [0.2, 0.4, 0.2],
-                    }}
-                    transition={{
-                        duration: 5,
-                        repeat: Infinity,
-                        ease: "easeInOut",
-                        delay: 1,
-                    }}
-                />
-
-                {/* Availability Badge */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
+                    className="w-full md:w-[55%] flex flex-col items-start justify-center"
+                    initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5 }}
-                    className="badge-animated inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-sm font-medium backdrop-blur-sm"
+                    transition={{
+                        duration: 1,
+                        ease: [0.16, 1, 0.3, 1],
+                    }}
                 >
-                    <motion.span
-                        className="w-2 h-2 rounded-full bg-emerald-400"
-                        animate={{
-                            scale: [1, 1.2, 1],
-                            opacity: [1, 0.7, 1],
-                        }}
-                        transition={{
-                            duration: 2,
-                            repeat: Infinity,
-                            ease: "easeInOut",
-                        }}
-                    />
-                    <span>Open to Opportunities</span>
-                    <Sparkles className="w-3.5 h-3.5" />
-                </motion.div>
+                    {/* Status Badge — lime pill */}
+                    <div className="hero-status-pill mb-8 flex items-center gap-2 text-xs uppercase tracking-wider">
+                        <span className="w-2 h-2 rounded-full bg-lime animate-pulse flex-shrink-0" />
+                        Open to Opportunities
+                    </div>
 
-                {/* Main Heading */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: 0.1 }}
-                >
-                    <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight">
-                        Hi, I&apos;m{" "}
-                        <span className="text-gradient">Jaydatta</span>
+                    {/* Headline */}
+                    <h1 className="font-sora text-5xl md:text-6xl lg:text-7xl xl:text-8xl text-primary mb-8 font-black tracking-[-0.04em] leading-[1.1]">
+                        I build AI systems that actually{" "}
+                        <span className="italic text-lime font-black">
+                            work.
+                        </span>
                     </h1>
-                    <div className="mt-4 text-2xl md:text-4xl lg:text-5xl font-semibold text-muted-foreground/80">
-                        <span>{displayText}</span>
-                        <motion.span
-                            className="inline-block w-0.5 h-8 md:h-10 lg:h-12 bg-current ml-1 align-middle"
-                            animate={{ opacity: [1, 0] }}
-                            transition={{
-                                duration: 0.8,
-                                repeat: Infinity,
-                                repeatType: "reverse",
-                            }}
-                        />
+
+                    {/* Subtitle */}
+                    <p className="font-inter text-body-lg text-on-surface-variant mb-12 max-w-2xl border-l-2 border-primary-fixed-dim pl-6">
+                        B.Tech AI &amp; Data Science · GCOE Kolhapur
+                    </p>
+
+                    {/* CTA Buttons */}
+                    <div className="flex flex-col sm:flex-row gap-6">
+                        <Link href="#contact">
+                            <motion.button
+                                className="btn-primary cursor-interactive"
+                                whileHover={{ scale: 1.02 }}
+                                whileTap={{ scale: 0.98 }}
+                            >
+                                Let&apos;s Connect
+                            </motion.button>
+                        </Link>
+                        <Link
+                            href="https://drive.google.com/file/d/1Vg1chCoKwgZjd59jLPs__YGlmd8Szb-n/view?usp=drive_link"
+                            target="_blank"
+                        >
+                            <motion.button
+                                className="btn-outline flex items-center gap-2 cursor-interactive"
+                                whileHover={{ scale: 1.02 }}
+                                whileTap={{ scale: 0.98 }}
+                            >
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="18"
+                                    height="18"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                >
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                    <polyline points="7 10 12 15 17 10" />
+                                    <line x1="12" y1="15" x2="12" y2="3" />
+                                </svg>
+                                Download Resume
+                            </motion.button>
+                        </Link>
                     </div>
                 </motion.div>
-
-                {/* Subtitle - From Resume Summary */}
-                <motion.p
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: 0.2 }}
-                    className="max-w-2xl text-lg md:text-xl text-muted-foreground leading-relaxed"
-                >
-                    B.Tech student in{" "}
-                    <span className="text-gradient-static font-medium">Artificial Intelligence & Data Science</span>{" "}
-                    with strong hands-on experience in full-stack development and AI-integrated applications.
-                </motion.p>
-
-                {/* Social Links */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: 0.25 }}
-                    className="flex items-center gap-3"
-                >
-                    {socialLinks.map((social, index) => (
-                        <motion.a
-                            key={social.name}
-                            href={social.href}
-                            target={social.name !== "Email" ? "_blank" : undefined}
-                            rel="noopener noreferrer"
-                            className="w-10 h-10 rounded-xl glass-card flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
-                            whileHover={{ scale: 1.1, y: -2 }}
-                            whileTap={{ scale: 0.95 }}
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.3 + index * 0.1 }}
-                        >
-                            <social.icon className="w-5 h-5" />
-                        </motion.a>
-                    ))}
-                </motion.div>
-
-                {/* CTA Buttons */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: 0.3 }}
-                    className="flex flex-col sm:flex-row gap-4"
-                >
-                    <Link href="#contact">
-                        <motion.button
-                            className="btn-glow h-12 px-8 rounded-xl text-sm font-semibold inline-flex items-center justify-center gap-2"
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                        >
-                            <span className="flex items-center gap-2">
-                                Let&apos;s Connect
-                                <ArrowRight className="w-4 h-4" />
-                            </span>
-                        </motion.button>
-                    </Link>
-                    <Button variant="outline" size="lg" asChild className="h-12 px-8 rounded-xl border-border hover:border-foreground/30 hover:bg-accent/50">
-                        <Link href="https://drive.google.com/file/d/1rSVmIYr7jrcOqhosxNv7IZ-wqMQuanpV/view?usp=drive_link" target="_blank" className="flex items-center gap-2">
-                            <Download className="w-4 h-4" />
-                            Download Resume
-                        </Link>
-                    </Button>
-                </motion.div>
-
-                {/* Scroll Indicator */}
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 1.5, duration: 0.5 }}
-                    className="absolute -bottom-16 left-1/2 -translate-x-1/2"
-                >
-                    <motion.div
-                        className="w-6 h-10 rounded-full border-2 border-muted-foreground/30 flex justify-center p-2"
-                        animate={{ y: [0, 5, 0] }}
-                        transition={{
-                            duration: 2,
-                            repeat: Infinity,
-                            ease: "easeInOut",
-                        }}
-                    >
-                        <motion.div
-                            className="w-1.5 h-1.5 rounded-full bg-muted-foreground/50"
-                            animate={{ y: [0, 12, 0] }}
-                            transition={{
-                                duration: 2,
-                                repeat: Infinity,
-                                ease: "easeInOut",
-                            }}
-                        />
-                    </motion.div>
-                </motion.div>
-            </motion.div>
-        </Section>
+            </div>
+        </section>
     );
 }

@@ -1,50 +1,77 @@
 import type { Metadata } from "next";
-import { Outfit } from "next/font/google";
+import { Sora, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import AnimatedBackground from "@/components/AnimatedBackground";
-import { ThemeProvider } from "@/components/ThemeProvider";
-import { cn } from "@/lib/utils";
+import CustomCursor from "@/components/CustomCursor";
+import ScrollReveal from "@/components/ScrollReveal";
 
-const outfit = Outfit({ subsets: ["latin"], weight: ["300", "400", "500", "600", "700"] });
+const sora = Sora({
+    subsets: ["latin"],
+    weight: ["400", "600", "700", "800"],
+    variable: "--font-sora",
+});
+
+const inter = Inter({
+    subsets: ["latin"],
+    weight: ["400", "500", "600"],
+    variable: "--font-inter",
+});
+
+const jetbrainsMono = JetBrains_Mono({
+    subsets: ["latin"],
+    weight: ["400", "500"],
+    variable: "--font-mono",
+});
 
 export const metadata: Metadata = {
-  title: "Jaydatta Laxmikant Kshirsagar | AI & Data Science Student",
-  description: "B.Tech student in AI & Data Science with strong hands-on experience in full-stack development and AI-integrated applications. Skilled in Next.js, Node.js, and Python.",
-  openGraph: {
-    type: "website",
-    locale: "en_US",
-    url: "https://jaydatta.dev",
-    title: "Jaydatta Laxmikant Kshirsagar | AI & Data Science Student",
-    description: "Building impactful real-world solutions using modern web technologies and Machine Learning models.",
-    siteName: "Jaydatta.dev",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Jaydatta Laxmikant Kshirsagar | AI & Data Science",
-    description: "B.Tech student specializing in AI, Machine Learning, and Full Stack Development",
-  },
-  keywords: ["Jaydatta Kshirsagar", "AI Developer", "Full Stack Developer", "Machine Learning", "Next.js", "Python", "Data Science"],
+    title: "Jaydatta.dev | AI & Data Science Engineer",
+    description:
+        "AI Engineer and Full-Stack Developer experienced in architecting production-grade machine learning pipelines, RAG systems, and generative AI web applications.",
+    openGraph: {
+        type: "website",
+        locale: "en_US",
+        url: "https://jaydatta.dev",
+        title: "Jaydatta.dev | AI & Data Science Engineer",
+        description:
+            "Building production-grade AI systems and full-stack applications. B.Tech AI & Data Science at GCOE Kolhapur.",
+        siteName: "Jaydatta.dev",
+    },
+    twitter: {
+        card: "summary_large_image",
+        title: "Jaydatta.dev | AI & Data Science Engineer",
+        description:
+            "AI Engineer building production-grade ML pipelines, RAG systems, and generative AI applications.",
+    },
+    keywords: [
+        "Jaydatta Kshirsagar",
+        "AI Engineer",
+        "Full Stack Developer",
+        "Machine Learning",
+        "RAG",
+        "LLMs",
+        "Next.js",
+        "Python",
+        "Data Science",
+    ],
 };
 
 export default function RootLayout({
-  children,
+    children,
 }: Readonly<{
-  children: React.ReactNode;
+    children: React.ReactNode;
 }>) {
-  return (
-    <html lang="en" className="scroll-smooth dark" suppressHydrationWarning>
-      <body className={cn(outfit.className, "bg-background text-foreground antialiased")}>
-        <ThemeProvider>
-          <AnimatedBackground />
-          <Navbar />
-          <main className="min-h-screen relative z-10">
-            {children}
-          </main>
-          <Footer />
-        </ThemeProvider>
-      </body>
-    </html>
-  );
+    return (
+        <html lang="en" className="dark" suppressHydrationWarning>
+            <body
+                className={`${sora.variable} ${inter.variable} ${jetbrainsMono.variable} antialiased`}
+            >
+                <CustomCursor />
+                <ScrollReveal />
+                <Navbar />
+                <main className="relative z-10">{children}</main>
+                <Footer />
+            </body>
+        </html>
+    );
 }

@@ -1,134 +1,137 @@
 "use client";
 
-import { Section } from "@/components/ui/Section";
-import { motion, useInView, useScroll, useTransform } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import { useRef, useEffect, useState } from "react";
-import { Code2, Brain, Target, Rocket, MapPin, GraduationCap } from "lucide-react";
 
-function AnimatedCounter({ value, duration = 2 }: { value: number; duration?: number }) {
+function StatCounter({
+    target,
+    suffix = "",
+    prefix = "",
+}: {
+    target: number;
+    suffix?: string;
+    prefix?: string;
+}) {
     const [count, setCount] = useState(0);
     const ref = useRef(null);
     const isInView = useInView(ref, { once: true });
 
     useEffect(() => {
         if (isInView) {
-            let start = 0;
-            const increment = value / (duration * 60);
+            let current = 0;
+            const duration = 2000;
+            const step = target / (duration / 16);
+
             const timer = setInterval(() => {
-                start += increment;
-                if (start >= value) {
-                    setCount(value);
+                current += step;
+                if (current >= target) {
+                    setCount(target);
                     clearInterval(timer);
                 } else {
-                    setCount(Math.floor(start));
+                    setCount(Math.ceil(current));
                 }
-            }, 1000 / 60);
+            }, 16);
+
             return () => clearInterval(timer);
         }
-    }, [isInView, value, duration]);
+    }, [isInView, target]);
 
-    return <span ref={ref}>{count}+</span>;
+    return (
+        <span ref={ref}>
+            {prefix}
+            {count}
+            {suffix}
+        </span>
+    );
 }
 
 export default function About() {
-    const containerRef = useRef(null);
-    const { scrollYProgress } = useScroll({
-        target: containerRef,
-        offset: ["start end", "end start"],
-    });
-
-    const y = useTransform(scrollYProgress, [0, 1], [100, -100]);
-
     return (
-        <Section id="about">
-            <div ref={containerRef} className="space-y-16">
-                {/* Section Header */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.5 }}
-                    className="text-center space-y-4"
-                >
-                    <span className="badge-animated inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-sm font-medium">
-                        <Rocket className="w-3.5 h-3.5" />
-                        About Me
-                    </span>
-                    <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight">
-                        Passionate about{" "}
-                        <span className="text-gradient">AI & Innovation</span>
-                    </h2>
-                </motion.div>
+        <section id="about" className="max-w-screen-xl mx-auto px-5 md:px-8 lg:px-12 xl:px-16 mb-24">
+            <div className="section-line" />
+            <div className="font-mono text-label-mono text-outline-variant mb-16 uppercase tracking-widest">
+                [SCN_01 // ABOUT]
+            </div>
 
-                {/* About Content - From Resume Summary */}
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-gutter">
+                {/* Left — Headline */}
                 <motion.div
+                    className="md:col-span-5 mb-12 md:mb-0"
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    transition={{ duration: 0.6 }}
-                    className="max-w-4xl mx-auto"
+                    transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
                 >
-                    <div className="glass-card rounded-2xl p-8 md:p-10">
-                        <div className="flex flex-col md:flex-row gap-8 items-start">
-                            {/* Info */}
-                            <div className="flex-1 space-y-4">
-                                <p className="text-lg text-muted-foreground leading-relaxed">
-                                    B.Tech student in <span className="text-foreground font-medium">Artificial Intelligence & Data Science</span> with
-                                    strong hands-on experience in full-stack development and AI-integrated applications.
-                                </p>
-                                <p className="text-lg text-muted-foreground leading-relaxed">
-                                    Skilled in <span className="text-gradient-static font-medium">Next.js</span>, <span className="text-gradient-static font-medium">Node.js</span>, and <span className="text-gradient-static font-medium">Python</span>,
-                                    with a passion for building impactful real-world solutions using modern web technologies and Machine Learning models.
-                                </p>
+                    <h2 className="font-sora text-headline-lg-mobile md:text-headline-lg text-primary leading-tight">
+                        Turning{" "}
+                        <em className="italic text-lime">
+                            ideas
+                        </em>{" "}
+                        into production-grade systems.
+                    </h2>
+                </motion.div>
 
-                                {/* Quick Info */}
-                                <div className="flex flex-wrap gap-4 pt-4">
-                                    <div className="flex items-center gap-2 text-muted-foreground">
-                                        <MapPin className="w-4 h-4 text-cyan-400" />
-                                        <span>Kolhapur, India</span>
-                                    </div>
-                                    <div className="flex items-center gap-2 text-muted-foreground">
-                                        <GraduationCap className="w-4 h-4 text-purple-400" />
-                                        <span>B.Tech 2023-2027</span>
-                                    </div>
-                                </div>
+                {/* Spacer */}
+                <div className="md:col-span-1" />
+
+                {/* Right — Body + Stats */}
+                <motion.div
+                    className="md:col-span-6 flex flex-col justify-center"
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{
+                        duration: 1,
+                        ease: [0.16, 1, 0.3, 1],
+                        delay: 0.2,
+                    }}
+                >
+                    <p className="font-inter text-[22px] leading-[1.8] text-on-surface-variant mb-8">
+                        AI Engineer and Full-Stack Developer experienced in
+                        architecting production-grade machine learning pipelines,
+                        Retrieval-Augmented Generation (RAG) systems, and
+                        generative AI web applications. Adept at leveraging
+                        Large Language Models (LLMs), deep learning frameworks,
+                        and robust backend architectures to solve complex
+                        workflow challenges.
+                    </p>
+                    <p className="font-inter text-[22px] leading-[1.8] text-on-surface-variant mb-8">
+                        Currently in my 3rd year of B.Tech at GCOE Kolhapur,
+                        consistently recognized with multiple national hackathon
+                        victories for delivering scalable, high-impact technical
+                        prototypes. VP of the Artificial Intelligence Students&apos;
+                        Association (AISA).
+                    </p>
+
+                    {/* Stats */}
+                    <div className="flex flex-row justify-between items-center w-full border-t border-outline-variant/30 pt-8 gap-2">
+                        <div className="stat-item">
+                            <div className="font-sora text-lime text-headline-lg text-primary-fixed-dim">
+                                <StatCounter target={10} suffix="+" />
+                            </div>
+                            <div className="font-mono text-label-mono text-outline mt-2 uppercase">
+                                Projects
+                            </div>
+                        </div>
+                        <div className="stat-item">
+                            <div className="font-sora text-lime text-headline-lg text-primary">
+                                <StatCounter target={6} suffix="+" />
+                            </div>
+                            <div className="font-mono text-label-mono text-outline mt-2 uppercase">
+                                LLMs Integrated
+                            </div>
+                        </div>
+                        <div className="stat-item">
+                            <div className="font-sora text-lime text-headline-lg text-primary">
+                                <StatCounter target={3} suffix="rd" />
+                            </div>
+                            <div className="font-mono text-label-mono text-outline mt-2 uppercase">
+                                Year B.Tech
                             </div>
                         </div>
                     </div>
                 </motion.div>
-
-                {/* Stats Grid with Scroll Animation */}
-                <motion.div style={{ y }} className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    {[
-                        { label: "Projects Built", value: 10, icon: Code2, description: "AI & Full Stack" },
-                        { label: "Technologies", value: 20, icon: Brain, description: "Frontend to ML" },
-                        { label: "Graduation Year", value: 2027, icon: Target, description: "GCOE Kolhapur", noPlus: true },
-                    ].map((stat, index) => (
-                        <motion.div
-                            key={stat.label}
-                            initial={{ opacity: 0, y: 30, scale: 0.95 }}
-                            whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                            viewport={{ once: true }}
-                            transition={{ duration: 0.5, delay: index * 0.1 }}
-                            whileHover={{ y: -8, transition: { duration: 0.3 } }}
-                            className="glass-card rounded-2xl p-8 text-center group cursor-default"
-                        >
-                            <motion.div
-                                className="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-gradient-to-br from-cyan-500/20 to-purple-500/20 mb-4"
-                                whileHover={{ rotate: 360, scale: 1.1 }}
-                                transition={{ duration: 0.5 }}
-                            >
-                                <stat.icon className="w-7 h-7 text-cyan-400" />
-                            </motion.div>
-                            <div className="text-4xl md:text-5xl font-bold text-gradient mb-2">
-                                {stat.noPlus ? stat.value : <AnimatedCounter value={stat.value} />}
-                            </div>
-                            <p className="text-foreground font-medium">{stat.label}</p>
-                            <p className="text-sm text-muted-foreground mt-1">{stat.description}</p>
-                        </motion.div>
-                    ))}
-                </motion.div>
             </div>
-        </Section>
+        </section>
     );
 }
